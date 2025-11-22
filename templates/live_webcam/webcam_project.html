@@ -3,146 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Webcam Project</title>
-    <style>
-        body { 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            background-color: #2E3440; 
-            font-family: sans-serif; 
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        h1 { color: #ECEFF4; text-align: center; }
-        .webcam-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 20px;
-        }
-        video { 
-            border: 5px solid #88C0D0; 
-            border-radius: 10px; 
-            background-color: #000;
-            /* Style for 9:16 aspect ratio */
-            height: 70vh; /* Use viewport height to control size */
-            width: auto;
-        }
-        .photo-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        #photo-result {
-            border: 5px solid #D8DEE9;
-            border-radius: 10px;
-            height: 35vh; /* Half the height of the video */
-            width: auto;
-            margin-top: 28px; /* Align with video top */
-            display: none; /* Hidden by default */
-        }
-        .controls {
-            margin-top: 20px;
-            display: flex;
-            gap: 15px;
-        }
-        .control-btn { 
-            color: #2E3440; 
-            text-decoration: none; 
-            background-color: #88C0D0; 
-            padding: 10px 20px; 
-            border: none;
-            border-radius: 5px; 
-            font-weight: 500;
-            cursor: pointer;
-            font-size: 16px;
-        }
-    </style>
+    <title>Live IP Webcam Broadcast</title>
+    <link rel="stylesheet" href="{{ url_for('live_webcam.static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Live Webcam Feed 📸</h1>
-
+    <h1>Live Webcam Broadcast</h1>
     <div class="webcam-container">
-        <video id="webcam" autoplay playsinline></video>
-        <div class="photo-container">
-            <canvas id="photo-canvas" style="display: none;"></canvas>
-            <img id="photo-result" alt="Captured Photo">
-        </div>
+        <img id="video-stream" src="" alt="Live Video Feed" width="640" style="display:none;">
+        <p id="status-message">Stream is stopped.</p>
+    </div>
+    
+    <div id="stream-info" class="stream-info" style="display:none;">
+        <p>Streaming URL (for VLC, etc.):</p>
+        <code id="rtsp-url"></code>
     </div>
 
     <div class="controls">
-        <button id="switch-camera-btn" class="control-btn">Switch Camera</button>
-        <button id="take-photo-btn" class="control-btn">Take Photo</button>
+        <button id="start-btn" class="control-btn">Start Stream</button>
+        <button id="stop-btn" class="control-btn">Stop Stream</button>
         <a href="{{ url_for('live_webcam.details') }}" class="control-btn">Back to Details</a>
     </div>
 
-    <script>
-        const videoElement = document.getElementById('webcam');
-        const switchCameraButton = document.getElementById('switch-camera-btn');
-        const takePhotoButton = document.getElementById('take-photo-btn');
-        const photoCanvas = document.getElementById('photo-canvas');
-        const photoResult = document.getElementById('photo-result');
-        
-        let currentFacingMode = 'user'; 
-        let currentStream;
-
-        function stopCurrentStream() {
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-            }
-        }
-
-        async function startCamera(facingMode) {
-            stopCurrentStream();
-            const constraints = {
-                video: {
-                    facingMode: facingMode,
-                    // Enforce a 9:16 aspect ratio
-                    aspectRatio: 9 / 16,
-                    height: { ideal: 1280 },
-                    width: { ideal: 720 }
-                }
-            };
-
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia(constraints);
-                videoElement.srcObject = stream;
-                currentStream = stream;
-            } catch (error) {
-                console.error("Error accessing webcam.", error);
-                alert("Could not access camera. It might not support the requested 9:16 resolution.");
-            }
-        }
-
-        switchCameraButton.addEventListener('click', () => {
-            currentFacingMode = (currentFacingMode === 'user') ? 'environment' : 'user';
-            startCamera(currentFacingMode);
-        });
-
-        takePhotoButton.addEventListener('click', () => {
-            // Set canvas dimensions to the actual video stream size
-            photoCanvas.width = videoElement.videoWidth;
-            photoCanvas.height = videoElement.videoHeight;
-
-            // Draw the current video frame onto the canvas
-            const context = photoCanvas.getContext('2d');
-            context.drawImage(videoElement, 0, 0, photoCanvas.width, photoCanvas.height);
-            
-            // Convert the canvas to a PNG image
-            const dataUrl = photoCanvas.toDataURL('image/png');
-
-            // Display the captured image
-            photoResult.src = dataUrl;
-            photoResult.style.display = 'block';
-        });
-
-        // Initially start the camera
-        startCamera(currentFacingMode);
-    </script>
+    <script src="{{ url_for('live_webcam.static', filename='script.js') }}"></script>
 </body>
 </html>
