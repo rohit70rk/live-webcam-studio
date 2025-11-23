@@ -1,0 +1,42 @@
+{% extends 'base_layout.html' %}
+{% load static %}
+
+{% block title %}Dashboard | Webcam Studio{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <h1>Welcome to Your Studio</h1>
+        <p class="subtitle">Select a mode to begin capturing or streaming.</p>
+    </header>
+
+    <div class="cards-grid">
+        <!-- Card 1: Live Stream -->
+        <div class="card">
+            <div class="card-icon">📹</div>
+            <h2>Live Broadcast</h2>
+            <p>Start a real-time RTSP stream from your webcam to the network.</p>
+            <!-- CORRECTED URL NAME HERE -->
+            <a href="{% url 'stream_video' %}" class="btn primary-btn">Go to Stream</a>
+        </div>
+
+        <!-- Card 2: Record Video -->
+        <div class="card">
+            <div class="card-icon">🎬</div>
+            <h2>Record Video</h2>
+            <p>Capture high-quality video clips directly to your local storage.</p>
+            <!-- CORRECTED URL NAME HERE -->
+            <a href="{% url 'record_video' %}" class="btn secondary-btn">Start Recording</a>
+        </div>
+
+        <!-- Card 3: Take Picture -->
+        <div class="card">
+            <div class="card-icon">📸</div>
+            <h2>Take Picture</h2>
+            <p>Snap high-resolution photos with instant filters and processing.</p>
+            <!-- CORRECTED URL NAME HERE -->
+            <a href="{% url 'take_picture' %}" class="btn secondary-btn">Capture Photo</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
