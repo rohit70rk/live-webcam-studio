@@ -6,14 +6,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const streamInfo = document.getElementById('stream-info');
     const rtspUrlElement = document.getElementById('rtsp-url');
 
-    // URLs for the Flask API endpoints
+    // API endpoints (Django)
     const startUrl = '/projects/webcam/start_stream';
     const stopUrl = '/projects/webcam/stop_stream';
     const statusUrl = '/projects/webcam/status';
     const videoFeedUrl = '/projects/webcam/video_feed';
 
     startBtn.addEventListener('click', () => {
-        // Call the /start_stream endpoint
         fetch(startUrl)
             .then(response => response.json())
             .then(data => {
@@ -21,13 +20,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('Stream started:', data.rtsp_url);
                     updateStatus(true, data.rtsp_url);
                 } else {
-                    statusMessage.textContent = 'Error: Could not start stream.';
+                    statusMessage.textContent = 'Error: Could not start stream. Check console.';
                 }
             });
     });
 
     stopBtn.addEventListener('click', () => {
-        // Call the /stop_stream endpoint
         fetch(stopUrl)
             .then(response => response.json())
             .then(data => {
@@ -40,15 +38,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateStatus(isStreaming, url) {
         if (isStreaming) {
-            // Point the <img> src to the video feed route to start viewing
-            // A timestamp is added to prevent the browser from caching the stream
+            // Add timestamp to prevent browser caching
             videoStream.src = videoFeedUrl + '?' + new Date().getTime();
             videoStream.style.display = 'block';
             statusMessage.style.display = 'none';
             rtspUrlElement.textContent = url;
             streamInfo.style.display = 'block';
         } else {
-            // Clear the <img> src to stop the stream
             videoStream.src = '';
             videoStream.style.display = 'none';
             statusMessage.textContent = 'Stream is stopped.';
@@ -57,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Check the initial stream status when the page loads
+    // Check status on page load
     fetch(statusUrl)
         .then(response => response.json())
         .then(data => {

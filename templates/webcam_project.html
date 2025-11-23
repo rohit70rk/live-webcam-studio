@@ -1,10 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live IP Webcam Broadcast</title>
-    <link rel="stylesheet" href="{{ url_for('live_webcam.static', filename='style.css') }}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
     <h1>Live Webcam Broadcast</h1>
@@ -21,9 +22,8 @@
     <div class="controls">
         <button id="start-btn" class="control-btn">Start Stream</button>
         <button id="stop-btn" class="control-btn">Stop Stream</button>
-        <a href="{{ url_for('live_webcam.details') }}" class="control-btn">Back to Details</a>
     </div>
 
-    <script src="{{ url_for('live_webcam.static', filename='script.js') }}"></script>
+    <script src="{% static 'script.js' %}"></script>
 </body>
 </html>
