@@ -6,7 +6,10 @@
     --text-sub: #D8DEE9;
     --accent-primary: #88C0D0;
     --accent-secondary: #81A1C1;
-    --hover-color: #A6DAE8;
+    --danger: #ec1329;
+    --success-gradient-start: #1d8f54;
+    --success-gradient-end: #0a5c28;
+    --hover-overlay: rgba(255, 255, 255, 0.1);
 }
 
 body {
@@ -20,6 +23,88 @@ body {
     padding: 0;
 }
 
+/* --- Keyframe Animations (Global) --- */
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* --- Buttons (Global Unified Architecture) --- */
+.btn {
+    text-decoration: none;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    
+    /* Apply Pop-In animation to all buttons on load/appear */
+    animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Hover Effect: Lift up */
+.btn:hover:not(:disabled) {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Active/Click Effect: Press down */
+.btn:active:not(:disabled) {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Disabled State */
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    filter: grayscale(0.8);
+}
+
+/* --- Button Color Variants --- */
+
+.primary-btn {
+    background-color: var(--accent-primary);
+    color: var(--bg-color);
+}
+.primary-btn:hover:not(:disabled) {
+    background-color: #9cd1e0; /* Slightly lighter */
+}
+
+.stop-btn {
+    background-color: var(--danger);
+    color: white;
+}
+.stop-btn:hover:not(:disabled) {
+    background-color: #ff3b4e;
+}
+
+.secondary-btn {
+    background-color: transparent;
+    border: 2px solid var(--accent-secondary);
+    color: var(--accent-secondary);
+}
+.secondary-btn:hover:not(:disabled) {
+    background-color: var(--accent-secondary);
+    color: var(--bg-color);
+}
+
 /* --- Navigation --- */
 .main-nav {
     background-color: rgba(46, 52, 64, 0.95);
@@ -31,6 +116,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
+    backdrop-filter: blur(10px);
 }
 
 .nav-brand {
@@ -45,22 +131,22 @@ body {
     text-decoration: none;
     margin-left: 20px;
     transition: color 0.3s;
+    font-weight: 500;
 }
 
 .nav-links a:hover {
     color: var(--accent-primary);
 }
 
-/* --- Main Layout --- */
+/* --- Layout Utilities --- */
 .main-content {
     flex: 1;
     display: flex;
     justify-content: center;
-    align-items: center; /* Centers content vertically on the landing page */
+    align-items: center;
     padding: 40px 20px;
 }
 
-/* --- Dashboard Specifics --- */
 .dashboard-container {
     max-width: 1200px;
     width: 100%;
@@ -68,18 +154,17 @@ body {
 }
 
 .dashboard-header h1 {
-    font-size: 3rem;
-    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+    margin: 0 0 0 0;
     font-family: 'Lora', serif;
 }
 
 .subtitle {
     color: var(--text-sub);
-    font-size: 1.2rem;
-    margin-bottom: 3rem;
+    font-size: 1.1rem;
 }
 
-/* --- Cards Grid --- */
+/* --- Cards --- */
 .cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -96,11 +181,13 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
 .card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    border-color: var(--accent-primary);
 }
 
 .card-icon {
@@ -116,38 +203,7 @@ body {
 .card p {
     color: var(--text-sub);
     margin-bottom: 30px;
-    line-height: 1.5;
-}
-
-/* --- Buttons --- */
-.btn {
-    text-decoration: none;
-    padding: 12px 30px;
-    border-radius: 50px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    display: inline-block;
-}
-
-.primary-btn {
-    background-color: var(--accent-primary);
-    color: var(--bg-color);
-}
-
-.primary-btn:hover {
-    background-color: var(--hover-color);
-    transform: scale(1.05);
-}
-
-.secondary-btn {
-    background-color: transparent;
-    border: 2px solid var(--accent-secondary);
-    color: var(--accent-secondary);
-}
-
-.secondary-btn:hover {
-    background-color: var(--accent-secondary);
-    color: var(--bg-color);
+    line-height: 1.6;
 }
 
 /* --- Footer --- */
@@ -156,4 +212,5 @@ body {
     padding: 20px;
     color: #4C566A;
     font-size: 0.9rem;
+    opacity: 0.7;
 }

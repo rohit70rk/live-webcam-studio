@@ -1,0 +1,69 @@
+{% extends 'base_layout.html' %}
+{% load static %}
+
+{% block title %}Photo Booth | Webcam Studio{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <h1>Photo Booth</h1>
+        <p class="subtitle">Smile and capture!</p>
+    </header>
+
+    <div class="cards-grid">
+        <!-- Preview -->
+        <div class="card">
+            <h2>Live Preview</h2>
+            <video id="cam-preview" autoplay playsinline style="width: 100%; border-radius: 8px;"></video>
+            <div style="margin-top: 20px;">
+                <button id="snap-btn" class="btn primary-btn">Snap Photo</button>
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div class="card">
+            <h2>Result</h2>
+            <canvas id="canvas" class="hidden"></canvas>
+            <img id="photo-result" style="width: 100%; border-radius: 8px; display:none;" alt="Captured Photo">
+            <div style="margin-top: 20px;">
+                <a id="download-photo" class="btn download-btn hidden" download="photo.png">Download</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const video = document.getElementById('cam-preview');
+    const canvas = document.getElementById('canvas');
+    const photo = document.getElementById('photo-result');
+    const snapBtn = document.getElementById('snap-btn');
+    const downloadBtn = document.getElementById('download-photo');
+
+    // Access Camera
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => { video.srcObject = stream; })
+        .catch(err => console.error("Error:", err));
+
+    snapBtn.addEventListener('click', () => {
+        // Set canvas dimensions to match video
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // Draw video frame to canvas
+        const context = canvas.getContext('2d');
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Convert to image
+        const data = canvas.toDataURL('image/png');
+        photo.src = data;
+        photo.style.display = 'block';
+        
+        // Setup download
+        downloadBtn.href = data;
+        downloadBtn.classList.remove('hidden');
+    });
+</script>
+{% endblock %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'lws/style.css' %}">
+{% endblock %}

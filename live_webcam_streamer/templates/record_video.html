@@ -1,0 +1,73 @@
+{% extends 'base_layout.html' %}
+{% load static %}
+
+{% block title %}Record Video | Webcam Studio{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <h1>Local Recording Studio</h1>
+        <p class="subtitle">Record video directly in your browser and save to disk.</p>
+    </header>
+
+    <div class="video-wrapper">
+        <video id="preview" autoplay muted playsinline></video>
+    </div>
+
+    <div class="control-panel" style="margin-top: 20px;">
+        <button id="start-record" class="btn primary-btn">Start Recording</button>
+        <button id="stop-record" class="btn stop-btn" disabled>Stop Recording</button>
+        <a id="download-link" class="btn download-btn hidden">Download Clip</a>
+    </div>
+</div>
+
+<script>
+    // Simple Client-Side Recording Logic
+    let mediaRecorder;
+    let recordedChunks = [];
+
+    const preview = document.getElementById('preview');
+    const startBtn = document.getElementById('start-record');
+    const stopBtn = document.getElementById('stop-record');
+    const downloadLink = document.getElementById('download-link');
+
+    // Initialize Camera
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then(stream => {
+            preview.srcObject = stream;
+            mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorder.ondataavailable = event => {
+                if (event.data.size > 0) recordedChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                downloadLink.href = url;
+                downloadLink.download = 'recording_' + new Date().toISOString() + '.webm';
+                downloadLink.classList.remove('hidden');
+                downloadLink.textContent = "Download (" + (blob.size / 1024 / 1024).toFixed(2) + " MB)";
+            };
+        })
+        .catch(err => console.error("Camera access denied:", err));
+
+    startBtn.addEventListener('click', () => {
+        recordedChunks = [];
+        mediaRecorder.start();
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        downloadLink.classList.add('hidden');
+    });
+
+    stopBtn.addEventListener('click', () => {
+        mediaRecorder.stop();
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+    });
+</script>
+{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'lws/style.css' %}">
+{% endblock %}
