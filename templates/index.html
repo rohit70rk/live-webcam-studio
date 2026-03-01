@@ -11,13 +11,13 @@
     </header>
 
     <div class="cards-grid">
+
         <!-- Card 1: Live Stream -->
         <div class="card">
             <div class="card-icon">📹</div>
             <h2>Live Broadcast</h2>
-            <p>Start a real-time RTSP stream from your webcam to the network.</p>
-            <!-- CORRECTED URL NAME HERE -->
-            <a href="{% url 'stream_video' %}" class="btn primary-btn">Go to Stream</a>
+            <p>Start a secure, real-time peer-to-peer video stream.</p>
+            <a href="{% url 'create_stream' %}" class="btn primary-btn">Go to Stream</a>
         </div>
 
         <!-- Card 2: Record Video -->
@@ -37,6 +37,7 @@
             <!-- CORRECTED URL NAME HERE -->
             <a href="{% url 'take_picture' %}" class="btn primary-btn">Capture Photo</a>
         </div>
+
     </div>
 </div>
 {% endblock %}

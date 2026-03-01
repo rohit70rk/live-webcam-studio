@@ -19,5 +19,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('live_webcam_streamer.urls')),
+    path('', include('webcam_studio.urls')),
 ]

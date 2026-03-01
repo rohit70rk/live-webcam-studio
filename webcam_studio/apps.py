@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class LiveWebcamStreamerConfig(AppConfig):
+class WebcamStudioConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'live_webcam_streamer'
+    name = 'webcam_studio'

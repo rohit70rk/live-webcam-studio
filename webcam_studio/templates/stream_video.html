@@ -1,0 +1,74 @@
+{% extends 'base_layout.html' %}
+{% load static %}
+
+{% block title %}Live Stream | Webcam Studio{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <h1>Peer-to-Peer Stream</h1>        
+        <div style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+            <input type="text" id="invite-link" readonly 
+                   style="padding: 10px 15px; border-radius: 8px; border: 1px solid var(--accent-secondary); background: var(--bg-color); color: var(--text-main); width: 100%; max-width: 350px; font-family: monospace;">
+            <button id="copy-btn" class="btn secondary-btn" style="padding: 10px 20px;">Copy Link</button>
+        </div>
+    </header>
+
+    <div class="control-panel">
+        <button id="start-call-btn" class="btn primary-btn">Send Offer</button>
+        <button id="toggle-cam-btn" class="btn secondary-btn">Camera: ON</button>
+        <button id="toggle-mic-btn" class="btn secondary-btn">Mic: ON</button>
+    </div>
+
+    <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 300px; background: #000; border-radius: 12px; overflow: hidden; position: relative;">
+            <div style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); color: white; padding: 4px 8px; border-radius: 4px; z-index: 10;">You</div>
+            <video id="local-video" autoplay muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; transform: scaleX(-1);"></video>
+        </div>
+        
+        <div style="flex: 1; min-width: 300px; background: #000; border-radius: 12px; overflow: hidden; position: relative; border: 2px solid var(--accent-primary);">
+            <div style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); color: white; padding: 4px 8px; border-radius: 4px; z-index: 10;">Friend</div>
+            <video id="remote-video" autoplay playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover;"></video>
+        </div>
+    </div>
+</div>
+
+{{ room_name|json_script:"room-name" }}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'webrtc.js' %}"></script>
+<script>
+    // NEW: Copy to Clipboard Logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const inviteLink = document.getElementById('invite-link');
+        const copyBtn = document.getElementById('copy-btn');
+        
+        // Automatically fill in the full URL of the current room
+        inviteLink.value = window.location.href;
+
+        copyBtn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(inviteLink.value);
+                
+                // Visual feedback
+                copyBtn.textContent = 'Copied! ✓';
+                copyBtn.style.backgroundColor = 'var(--success-gradient-start)';
+                copyBtn.style.color = 'white';
+                copyBtn.style.borderColor = 'var(--success-gradient-start)';
+                
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    copyBtn.textContent = 'Copy Link';
+                    copyBtn.style.backgroundColor = 'transparent';
+                    copyBtn.style.color = 'var(--accent-secondary)';
+                    copyBtn.style.borderColor = 'var(--accent-secondary)';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy link. Please select and copy manually.');
+            }
+        });
+    });
+</script>
+{% endblock %}
